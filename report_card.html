@@ -1,0 +1,36 @@
+<div class="accordion-item bg-white border border-gray-200">
+    <h2 class="accordion-header mb-0" id="heading{index}">
+        <button class="
+            accordion-button
+            relative
+            flex
+            items-center
+            w-full
+            py-4
+            px-5
+            text-base text-gray-800 text-left
+            bg-white
+            border-0
+            rounded-none
+            transition
+            focus:outline-none
+        " type="button" data-bs-toggle="collapse" data-bs-target="#collapse{index}" aria-expanded="true"
+            aria-controls="collapse{index}">
+            <b><a href={url}>{title}</a></b><br />
+            {desc}<br />
+            {author}<br />
+            {source}<br />
+        </button>
+    </h2>
+    <div id="collapse{index}" class="accordion-collapse collapse show" aria-labelledby="heading{index}"
+    data-bs-parent="#accordionExample">
+        <div class="accordion-body py-4 px-5 flex flex-row">
+            <div>
+                {content}
+            </div>
+            <div>
+                <img class="object-scale-down h-48 w-96" href="{image}">
+            </div>
+        </div>
+    </div>
+</div>
