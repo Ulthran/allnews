@@ -1,36 +1,18 @@
-<div class="accordion-item bg-white border border-gray-200">
-    <h2 class="accordion-header mb-0" id="heading{index}">
-        <button class="
-            accordion-button
-            relative
-            flex
-            items-center
-            w-full
-            py-4
-            px-5
-            text-base text-gray-800 text-left
-            bg-white
-            border-0
-            rounded-none
-            transition
-            focus:outline-none
-        " type="button" data-bs-toggle="collapse" data-bs-target="#collapse{index}" aria-expanded="true"
-            aria-controls="collapse{index}">
-            <b><a href={url}>{title}</a></b><br />
-            {desc}<br />
-            {author}<br />
-            {source}<br />
-        </button>
-    </h2>
-    <div id="collapse{index}" class="accordion-collapse collapse show" aria-labelledby="heading{index}"
-    data-bs-parent="#accordionExample">
-        <div class="accordion-body py-4 px-5 flex flex-row">
-            <div>
-                {content}
-            </div>
-            <div>
-                <img class="object-scale-down h-48 w-96" href="{image}">
-            </div>
+<div class="overflow-hidden bg-white py-8 sm:py-10">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8 py-1 shadow-xl rounded-l-xl">
+      <div class="mx-auto grid max-w-2xl grid-cols-1 gap-y-16 gap-x-8 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+        <div class="lg:pr-8 lg:pt-4">
+          <div class="lg:max-w-lg">
+            <h2 class="text-lg font-semibold leading-8 tracking-tight text-indigo-600">{author}</h2>
+            <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"><a href="{url}">{title}</a></p>
+            <p class="mt-6 text-lg leading-8 text-gray-600">{desc}</p>
+            <dl class="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
+              {content}
+            </dl>
+          </div>
         </div>
+        <a href="{image}"><img src="{image}" alt="Image" class="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0" width="2432" height="1442"></a>
+      </div>
     </div>
-</div>
+  </div>
+  

@@ -34,9 +34,7 @@ class SESEmailer():
         </head>
         <body>
         <h1>Today's News</h1>
-        <div class="accordion" id="accordionExample">
         {self.reports_str(reports)}
-        </div>
         </body>
         </html>
                     """            
@@ -98,6 +96,7 @@ class SESEmailer():
         reports_str = ""
 
         for i, r in enumerate(reports["articles"]):
+            r = {k: v if v else '' for k, v in r.items()}
             with open("report_card.html", "r") as f:
                 reports_str += ''.join(f.readlines()).format(
                     index=str(i),
