@@ -1,0 +1,31 @@
+.reports {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.card {
+    border-radius: 25px;
+    box-shadow: 5px 10px 10px #aaaaaa;
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    padding: 10px;
+}
+.card:hover {
+    box-shadow: 8px 13px 13px #bbbbbb;
+}
+
+.text-side {
+    min-width: 40%;
+}
+
+.image-side {
+    min-width: 40%;
+}
+
+.image {
+    border-radius: 15px;
+    max-height:100%;
+    max-width:100%;
+}

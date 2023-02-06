@@ -29,13 +29,17 @@ class SESEmailer():
                     
         # The HTML body of the email.
         BODY_HTML = f"""<html>
-        <head>
-        <script src="https://cdn.tailwindcss.com"></script>
-        </head>
-        <body>
-        <h1>Today's News</h1>
-        {self.reports_str(reports)}
-        </body>
+            <head>
+                <style>
+                    {self.style_str()}
+                </style>
+            </head>
+            <body>
+                <h1>Today's News</h1>
+                <div class='reports'>
+                    {self.reports_str(reports)}
+                </div>
+            </body>
         </html>
                     """            
 
@@ -92,11 +96,17 @@ class SESEmailer():
 
 
     @staticmethod
+    def style_str() -> str:
+        with open("style.css") as f:
+            return ''.join(f.readlines())
+
+    @staticmethod
     def reports_str(reports: dict) -> str:
         reports_str = ""
 
         for i, r in enumerate(reports["articles"]):
             r = {k: v if v else '' for k, v in r.items()}
+            r["title"] = r["title"] if len(r["title"].split(" - ")) == 1 else r["title"].split(" - ")[:-1][0]
             with open("report_card.html", "r") as f:
                 reports_str += ''.join(f.readlines()).format(
                     index=str(i),
