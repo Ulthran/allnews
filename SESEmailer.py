@@ -1,5 +1,6 @@
 import boto3
 import datetime
+from airium import Airium
 from botocore.exceptions import ClientError
 
 class SESEmailer():
@@ -20,39 +21,53 @@ class SESEmailer():
         # If necessary, replace us-west-2 with the AWS Region you're using for Amazon SES.
         self.AWS_REGION = aws_region
 
+        self.airium = Airium()
+
     def send_email(self, reports: dict, dryrun: bool = False):
         # The subject line for the email.
         SUBJECT = f"{datetime.datetime.now().date()} News Report"
         
         # The email body for recipients with non-HTML email clients.
         BODY_TEXT = f"Today's News\r\n{reports}"
+        
+        self.airium('<!DOCTYPE html>')
+        with self.airium.html(lang="en"):
+            with self.airium.head():
+                self.airium.meta(charset="utf-8")
+                self.airium.title(_t="Ctbus News")
+
+            with self.airium.body():
+                with self.airium.h1():
+                    self.airium("Top Headlines")
+                with self.airium.table(style="border: 1px solid black; padding-inline: 15px;"):
+                    reports_by_source = {source: [r for r in reports["articles"] if r["source"]["name"] == source] for source in list(set([r["source"]["name"] for r in reports["articles"]]))}
                     
-        # The HTML body of the email.
-        BODY_HTML = f"""<html>
-            <head>
-                <style>
-                    {self.style_str()}
-                </style>
-            </head>
-            <body>
-                <h1>Today's News</h1>
-                <div class='reports'>
-                    {self.reports_str(reports)}
-                </div>
-            </body>
-        </html>
-                    """            
+                    for source, reports_list in reports_by_source.items():
+                        with self.airium.tr():
+                            with self.airium.td():
+                                self.airium.h3(_t=f"{source}")
+                        with self.airium.tr():
+                            with self.airium.td():
+                                with self.airium.table(style="padding-inline: 15px;"):
+                                    for r in reports_list:
+                                        with self.airium.tr():
+                                            r["title"] = r["title"] if len(r["title"].split(" - ")) == 1 else r["title"].split(" - ")[:-1][0]
+                                            display_str = f"{r['title']}"
+                                            if r["author"]:
+                                                display_str += f" - {r['author']}"
+                                            with self.airium.td():
+                                                self.airium.a(_t=display_str, href=r["url"])
 
         # The character encoding for the email.
         CHARSET = "UTF-8"
 
         if dryrun:
             with open("OUT.html", "w") as f:
-                f.write(BODY_HTML)
+                f.write(str(self.airium))
             return None
 
         # Create a new SES resource and specify a region.
-        client = boto3.client('ses',region_name=self.AWS_REGION)
+        client = boto3.client('ses', region_name=self.AWS_REGION)
 
         # Try to send the email.
         try:
@@ -67,7 +82,7 @@ class SESEmailer():
                     'Body': {
                         'Html': {
                             'Charset': CHARSET,
-                            'Data': BODY_HTML,
+                            'Data': str(self.airium),
                         },
                         'Text': {
                             'Charset': CHARSET,
@@ -94,30 +109,3 @@ class SESEmailer():
             print(response['MessageId'])
             return response['MessageId']
 
-
-    @staticmethod
-    def style_str() -> str:
-        with open("style.css") as f:
-            return ''.join(f.readlines())
-
-    @staticmethod
-    def reports_str(reports: dict) -> str:
-        reports_str = ""
-
-        for i, r in enumerate(reports["articles"]):
-            r = {k: v if v else '' for k, v in r.items()}
-            r["title"] = r["title"] if len(r["title"].split(" - ")) == 1 else r["title"].split(" - ")[:-1][0]
-            with open("report_card.html", "r") as f:
-                reports_str += ''.join(f.readlines()).format(
-                    index=str(i),
-                    title=r["title"],
-                    desc=r["description"],
-                    content=r["content"],
-                    url=r["url"],
-                    image=r["urlToImage"],
-                    author=r["author"],
-                    source=r["source"]["name"],
-                    time=r["publishedAt"]
-                    )
-                
-        return reports_str
